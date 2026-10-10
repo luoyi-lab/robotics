@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "/home/ly200/pybullet-env/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "files.exclude": {
+        "**/__pycache__": true
+    }
+}

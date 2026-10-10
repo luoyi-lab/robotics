@@ -1,0 +1,27 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ---- 虚拟环境（绝对不要提交）----
+.venv/
+venv/
+env/
+
+# ---- 编辑器 / 系统 ----
+.idea/
+.DS_Store
+Thumbs.db
+*~
+
+# ---- 视频（太大）。注意：.gif 不排除，演示动图要进 README ----
+*.mp4
+*.avi
+*.mov
+
+# ---- 日志 ----
+*.log
