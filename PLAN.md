@@ -20,13 +20,14 @@
 > 📎 **口径**：算进去 = 写代码 / 看教程 / 查文档 / **调 bug**；不算 = 休息摸鱼。
 > 📎 卡住 3 小时就停，第二天再战。提前做完**不要去看更多视频** —— 关掉教程把当天练习重写一遍。
 
-### Day 1 · 周日 10/11
-- [ ] 环境：`~/pybullet-env/bin/python day1_basics.py` 能跑通
-- [ ] 变量与类型：`int` / `float` / `str` / `bool` / `None`
-- [ ] `print()` 和 **f-string**：`f"{name} 今年 {age} 岁"`
-- [ ] 对照 C++ 的三个差异：**不用声明类型 / 不用分号 / 缩进代替花括号**
-- [ ] 📄 `day1_basics.py` —— 3 行输出你自己的信息
-- [ ] 💾 commit：`W1D1 变量与类型: 3行输出个人信息`
+### Day 1 · 周日 10/11 ✅ **已完成**（commit `cbaf219`）
+- [x] 环境：`~/pybullet-env/bin/python day1_basics.py` 能跑通
+- [x] 变量与类型：`int` / `float` / `str` / `bool` / `None`
+- [x] `print()` 和 **f-string**：`f"{name} 今年 {age} 岁"`
+- [x] 对照 C++ 的三个差异：**不用声明类型 / 不用分号 / 缩进代替花括号**
+- [x] 📄 `day1_basics.py` —— 3 行输出你自己的信息
+- [x] 💾 commit：`W1D1 变量与类型: f-string输出个人信息 + type()验证`
+- 📌 撞到的坑：`age = "22"` 加引号 → 是字符串不是数字，Python 不报错。已写进代码注释留档
 
 ### Day 2 · 周一 10/12
 - [ ] `list`：下标、切片、`append` / `remove` / `pop`、`len` —— 对照 C++ 的 `vector`
