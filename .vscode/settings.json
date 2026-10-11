@@ -3,5 +3,9 @@
     "python.terminal.activateEnvironment": true,
     "files.exclude": {
         "**/__pycache__": true
-    }
+    },
+    "code-runner.executorMap": {
+        "python": "/home/ly200/pybullet-env/bin/python -u"
+    },
+    "code-runner.runInTerminal": true
 }
