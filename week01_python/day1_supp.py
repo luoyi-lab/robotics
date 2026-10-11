@@ -27,3 +27,7 @@ print(f"{age > 18}")
 #{} 里放任何"能算出一个值"的东西： 变量能、运算能、比较能、函数调用也能
 
 print(True + True) #Python 的 bool 其实是 int 的子类 两个True相加为2
+
+x = None #python里面任何都可以为空 C++里只有指针才可以为空nullptr
+print(x)
+print (type(x))
