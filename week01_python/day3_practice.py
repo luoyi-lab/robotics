@@ -37,5 +37,3 @@ total = 0
 for n in nums: # i是下标 n是元素 规定的
     total += n
 print(total)    
-
-
