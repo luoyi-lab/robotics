@@ -1,0 +1,53 @@
+<?xml version="1.0"?>  
+<robot name="two_link_arm">       <!--声明这是一个 XML 文件，并定义机器人的名字叫 two_link_arm。这是固定格式-->
+
+  <link name="base_link">
+    <visual>
+      <geometry><cylinder radius="0.05" length="0.1"/></geometry>
+    </visual>
+    <inertial>
+      <mass value="2.0"/>   <!--定义质量-->
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <link name="link1">
+    <visual>
+      <origin xyz="0.5 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder radius="0.03" length="1.0"/></geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.5 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.00045" ixy="0" ixz="0" iyy="0.0836" iyz="0" izz="0.0836"/>
+    </inertial>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child  link="link1"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>  <!--这里的0 0 0 意思是：在没通电、没有发生任何旋转之前，子连杆（link2）挂在这个关节上的初始“坐姿” 和父连杆是一模一样的-->
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="100" velocity="1.0"/>
+  </joint>
+
+  <link name="link2">
+    <visual>
+      <origin xyz="0.5 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder radius="0.03" length="1.0"/></geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.5 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.00045" ixy="0" ixz="0" iyy="0.0836" iyz="0" izz="0.0836"/>
+    </inertial>
+  </link>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>   <!-- link1 的末端在自身的 X=1.0 处  装在 link1 的尽头 --> 
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="100" velocity="1.0"/>
+  </joint>
+</robot>

@@ -1,0 +1,62 @@
+<!--
+1.URDF是什么
+Unified Robot Description Format（统一的机器人描述格式） —— 一个 XML 文件，告诉仿真器：
+1.机器人有哪些零件（link）
+2.零件之间怎么连接（joint）
+3.每个零件的形状、质量、惯量
+PyBullet / MuJoCo / ROS 都吃这个格式
+
+ 概念                             是什么
+<link>                一个刚体：外观形状(visual) + 质量惯量(inertial)
+<joint>               连接父link和子link：类型、位置、转轴、限位
+<origin xyz rpy>      相对于父坐标系的位置与姿态 xyz是位置 rpy（roll pitch yaw）是姿态   父坐标系是上一级零件自带的坐标系 子坐标系是下一级零件自带的坐标系
+
+树结构：
+base_link
+   │ joint1 (绕 z)
+link1
+   │ joint2 (绕 z)
+link2
+-->
+
+<!--
+2.一个link长什么样
+<link name = "link1">
+  <visual>  开始描述外观形状
+    <origin xyz="0.5 0 0" rpy="0 1.5708 0"/> 定义几何中心的位置和整体的姿态
+    <geometry><cylinder radius="0.03" length="1.0"/></geometry>  这一段描述几何形状 geometry几何 cylinder圆柱体 radius半径  </geometry>表示几何描述结束
+  </visual>   表示外观形状描述结束
+  <inertial>   开始定义质量惯量属性
+    <origin xyz="0.5 0 0"/>  定义质心的位置
+    <mass value="1.0"/>   定义质量
+    <inertia ixx="0.00045" ixy="0" ixz="0" iyy="0.0836" iyz="0" izz="0.0836">     定义转动惯量矩阵 不用记
+  </inertial>   质量惯量定义结束
+</link>  这个零件的定义结束
+
+易错点：
+(1) <cylinder> 默认沿 z 轴 —— 要让它沿 x 躺下，得转 90°：rpy="0 1.5708 0"
+（绕 y 转 90°，z 轴转到 x 轴）
+
+(2) <visual> 和 <inertial> 里的 <origin> 不是一回事
+
+<visual> 的：画出来的形状摆在哪（这里把圆柱中心放到 x=0.5，让它从 0 伸到 1）
+<inertial> 的：质心在哪
+-->
+
+<!--
+3.一个joint长啥样
+<joint name ="joint2" type="revolute">    取名叫joint2  定义类型为旋转关节revolute
+  <parent link="link1"/>  关节的父级是 link1
+  <child link="link2"/>   关节的子级是 link2
+  <origin xyz="1.0 0 0" rpy="0 0 0"/>     表示这个关节安装在父级坐标系（link1）的 X 轴正方向 1.0 米处
+  <axis xyz="0 0 1"/>  这个关节转动时，是绕着当前坐标系的 Z 轴旋转（这个当前坐标系 是由origin标签刚刚建立起来的关节坐标系）
+  <limit lower="-3.14" upper="3.14" effort="100" velocity="1.0"/>   lower="-3.14" 和 upper="3.14"：限制关节的活动范围 意思是这个手肘最多只能正反各转 180 度    effort="100"：电机输出的最大扭矩    velocity="1.0"：电机的最大转动速度是 1 弧度/秒
+</joint>    关节定义结束
+
+和昨天写的 link_transform 的关系
+昨天写法：link_transform(θ, L) = Rz(θ) @ Trans(L)
+URDF写法： 关节 origin（Trans(L)）+ 关节转动（Rz(θ)）
+串起来是同一个乘积：
+T = T1 @ T2
+  = Rz(θ1) @ Trans(L1) @ Rz(θ2) @ Trans(L2)
+-->
