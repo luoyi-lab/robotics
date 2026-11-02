@@ -1,4 +1,8 @@
 # IK 逆运动学的几何直觉 
+# 【一句话】判断末端目标点够不够得到，并画成图
+# 【核心】|L1-L2| <= r <= L1+L2
+# 【下一步】W4 Day 2 解出 θ1 θ2
+
 # 1.先搞清楚IK是什么
 # FK：已知 θ1, θ2  →  求末端 (x, y)  一定有解 并且一定只有一个解
 # IK：已知 (x, y)  →  求 θ1, θ2
@@ -40,10 +44,10 @@ import matplotlib.pyplot as plt
 
 # ——————— 第 1 块：机械臂参数 ———————
 L1 = 1.0
-L2 = 1.0
+L2 = 0.5
 
 # ——————— 第 2 块：核心函数 ———————
-def reachable(x, y, L1=1.0, L2=0.5):
+def reachable(x, y, L1, L2):
     """给一个点 (x, y)，返回 True 表示够得到，False 表示够不到。"""
     r = np.sqrt(x * x + y * y)      # 末端到原点的距离
     # 核心逻辑：必须在最小半径和最大半径之间
@@ -59,7 +63,7 @@ ok_x, ok_y = [], []      # 装“够得到”的点的坐标
 no_x, no_y = [], []      # 装“够不到”的点的坐标
 
 for i in range(2000):
-    if reachable(xs[i], ys[i]):
+    if reachable(xs[i], ys[i], L1, L2):
         ok_x.append(xs[i])
         ok_y.append(ys[i])
     else:
@@ -71,7 +75,7 @@ plt.scatter(no_x, no_y, s=4, c='red')    # 红色的：够不到 size设为4
 plt.scatter(ok_x, ok_y, s=4, c='green')  # 绿色的：够得到
 plt.gca().set_aspect('equal')            # plt.gca()：Get Current Axes，意思是“获取当前的坐标系”。
                                          # .set_aspect('equal')：把 X 轴和 Y 轴的长宽比例锁定为 1:1。
-plt.show()
+
 
 # 5.验证
 
@@ -81,6 +85,7 @@ print(reachable(2.0, 0.0, L1=1, L2=1)) #  True
 print(reachable(2.01, 0.0, L1=1, L2=1)) #  False
 print(reachable(0.0, 0.0, L1=1, L2=1)) #  数学上可达 物理上是一个奇点
 
+plt.show()
 # 6.思考题
 # (1)cos θ2 解出来是一个数。从 cos θ2 到 θ2，为什么有两个答案？ 余弦函数是偶函数和周期函数 画一条横线有许多交点
 # (2)如果 cos θ2 = 1.2（大于 1），说明什么？  说明方程没有实数解 就是够不着的数学表达
