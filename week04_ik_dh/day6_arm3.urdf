@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot name="day6_arm3">
+  
+  <!-- 定义几种好看的材质颜色 -->
+  <material name="dark_grey"><color rgba="0.2 0.2 0.2 1.0"/></material>
+  <material name="orange"><color rgba="0.9 0.4 0.1 1.0"/></material>
+  <material name="blue"><color rgba="0.2 0.4 0.8 1.0"/></material>
+  <material name="green"><color rgba="0.2 0.8 0.2 1.0"/></material>
+  <material name="red"><color rgba="0.8 0.2 0.2 1.0"/></material>
+
+  <!-- 0. 基座 (fixed base) -->
+  <link name="base_link">
+    <inertial><mass value="5.0"/><inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/></inertial>
+    <visual>
+      <geometry><cylinder length="0.1" radius="0.15"/></geometry>
+      <origin xyz="0 0 0.05"/>
+      <material name="dark_grey"/>
+    </visual>
+  </link>
+
+  <!-- 1. 垂直立柱 (对应 d1 = 0.5) -->
+  <!-- 我们的关节1只负责水平旋转，我们让这个立柱充当 link1 -->
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="link1">
+    <inertial><mass value="2.0"/><inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.05"/></inertial>
+    <visual>
+      <!-- 🌟 修复重点：加一根长 0.5 的圆柱体，完美填补空洞！ -->
+      <geometry><cylinder length="0.5" radius="0.08"/></geometry>
+      <origin xyz="0 0 0.25"/> <!-- 居中在 0.25 的位置 -->
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <!-- 2. 大臂 (a2 = 1.0) -->
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <!-- 错位挂载：高度 0.5 的顶端正是在这里，Z轴翻转90度变成水平轴 -->
+    <origin xyz="0 0 0.5" rpy="1.570796 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="link2">
+    <inertial><mass value="2.0"/><inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/></inertial>
+    <visual>
+      <!-- 大臂：长 1.0，稍微做粗一点 -->
+      <geometry><box size="1.0 0.08 0.08"/></geometry>
+      <origin xyz="0.5 0 0"/> <!-- 视觉居中 -->
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <!-- 3. 小臂 (a3 = 0.7) -->
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="link3">
+    <inertial><mass value="1.0"/><inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.05"/></inertial>
+    <visual>
+      <!-- 小臂：长 0.7，比大臂细一点 -->
+      <geometry><box size="0.7 0.06 0.06"/></geometry>
+      <origin xyz="0.35 0 0"/>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <!-- 4. 末端工具 (Tool) -->
+  <joint name="joint_tool" type="fixed">
+    <parent link="link3"/>
+    <child link="tool"/>
+    <origin xyz="0.7 0 0" rpy="0 0 0"/>
+  </joint>
+  
+  <link name="tool">
+    <inertial><mass value="0.5"/><inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/></inertial>
+    <visual>
+      <!-- 末端加一个红色的尖头或球 -->
+      <geometry><sphere radius="0.04"/></geometry>
+      <material name="red"/>
+    </visual>
+  </link>
+
+</robot>
