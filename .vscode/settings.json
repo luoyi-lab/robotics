@@ -7,5 +7,6 @@
     "code-runner.executorMap": {
         "python": "/home/ly200/pybullet-env/bin/python -u"
     },
-    "code-runner.runInTerminal": true
+    "code-runner.runInTerminal": true,
+    "cmake.sourceDirectory": "/home/ly200/robotics/arm_control"
 }
