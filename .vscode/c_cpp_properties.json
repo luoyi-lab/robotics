@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/arm_control/include",
                 "/usr/include/eigen3"
             ],
             "defines": [],
