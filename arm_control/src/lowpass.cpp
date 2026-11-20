@@ -3,8 +3,14 @@
 namespace arm {
 
 // alpha = dt / (tau + dt)  —— 这是库的内部实现，调用方不需要知道
-LowPassFilter::LowPassFilter(double tau, double dt)
-    : alpha_(dt / (tau + dt)) {}
+LowPassFilter::LowPassFilter(double tau, double dt) {
+    // alpha 必须落在 (0, 1]：<=0 不滤波，>1 反馈项变号会振荡
+    if (!(tau > 0.0) || !(dt > 0.0)) {
+        alpha_ = 1.0;   // 退化成一个安全的"不滤波"，至少不会振
+    } else {
+        alpha_ = dt / (tau + dt);
+    }
+}
 
 void LowPassFilter::reset() {
     prev_y_ = 0.0;

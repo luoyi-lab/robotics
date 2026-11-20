@@ -101,6 +101,40 @@ int main() {
         EXPECT_TRUE(f.update(1.0) > 0.85, "8 alpha 大 -> 几乎不滤波");
     }
 
+        // ===== 以下是 Day 5 补的边界 =====
+
+    // 13) tau = 0 -> alpha = 1 -> 等效于一根导线（合法的极端值）
+    {
+        arm::LowPassFilter f(0.0, 0.01);
+        EXPECT_TRUE(f.alpha() > 0.0 && f.alpha() <= 1.0, "13 tau=0: alpha 在 (0,1]");
+    }
+
+    // 14) tau + dt = 0 -> alpha = dt/0，会除零
+    {
+        arm::LowPassFilter f(-0.01, 0.01);
+        EXPECT_TRUE(std::isfinite(f.alpha()), "14 tau+dt=0: alpha 有限");
+    }
+
+    // 15) tau < 0 -> alpha > 1 -> 反馈项 (1-alpha) 变负，输出会来回抽
+    {
+        arm::LowPassFilter f(-0.005, 0.01);
+        EXPECT_TRUE(f.alpha() > 0.0 && f.alpha() <= 1.0, "15 tau<0: alpha 在 (0,1]");
+    }
+
+    // 16) 阶跃响应应该单调往上爬，不该回头
+    {
+        arm::LowPassFilter f(0.1, 0.01);
+        f.update(0.0);
+        bool mono = true;
+        double prev = -1.0;
+        for (int k = 0; k < 50; ++k) {
+            const double y = f.update(1.0);
+            if (y < prev) mono = false;
+            prev = y;
+        }
+        EXPECT_TRUE(mono, "16 阶跃响应单调上升");
+    }
+
     std::printf("\n");
     if (g_fail == 0) { std::printf("All LowPass tests passed!\n"); return 0; }
     std::printf("LowPass: %d failed\n", g_fail);

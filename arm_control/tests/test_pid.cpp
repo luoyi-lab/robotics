@@ -88,6 +88,43 @@ int main() {
         EXPECT_NEAR(pid.update(0.0, 0.0, 0.01), 0.0, 1e-12, "7b reset 后: 全部归零");
     }
 
+    // ===== 以下是 Day 5 补的边界 =====
+
+    // 8) dt = 0：除不起零？输出会不会被推到限幅？
+    {
+        arm::PID pid(1.0, 1.0, 1.0, 50.0, arm::AntiWindup::None);
+        pid.update(1.0, 0.0, 0.01);                    // 先正常走一拍
+        const double u = pid.update(1.0, 1.0, 0.0);    // 再来一拍 dt=0
+        EXPECT_TRUE(std::fabs(u) < 50.0, "8 dt=0: 不该被推到限幅");
+    }
+
+    // 9) dt < 0：时间倒流
+    {
+        arm::PID pid(1.0, 1.0, 1.0, 50.0, arm::AntiWindup::None);
+        pid.update(1.0, 0.0, 0.01);
+        const double u = pid.update(1.0, 2.0, -0.01);
+        EXPECT_TRUE(std::fabs(u) < 50.0, "9 dt<0: 不该被推到限幅");
+    }
+
+    // 10) ki = 0 且 Clamp 模式：钳位常量要算 u_lim/ki，会不会除零
+    {
+        arm::PID pid(1.0, 0.0, 0.0, 10.0, arm::AntiWindup::Clamp);
+        const double u = pid.update(1.0, 0.0, 0.01);
+        EXPECT_TRUE(std::isfinite(u), "10 ki=0 + Clamp: 不除零");
+    }
+
+    // 11) u_lim = 0：输出应该就是 0
+    {
+        arm::PID pid(1.0, 1.0, 0.0, 0.0, arm::AntiWindup::Conditional);
+        EXPECT_NEAR(pid.update(1.0, 0.0, 0.01), 0.0, 1e-12, "11 u_lim=0: 输出 0");
+    }
+
+    // 12) 极端值：kp 和误差都取 1e9，看会不会溢出成 inf
+    {
+        arm::PID pid(1e9, 0.0, 0.0, 50.0, arm::AntiWindup::None);
+        EXPECT_TRUE(std::isfinite(pid.update(1e9, 0.0, 0.01)), "12 kp=1e9 e=1e9: 有限");
+    }
+
     std::printf("\n");
     if (g_fail == 0) { std::printf("All PID tests passed!\n"); return 0; }
     std::printf("PID: %d failed\n", g_fail);

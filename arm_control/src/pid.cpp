@@ -17,6 +17,11 @@ void PID::reset() {
 
 // 注意：函数名前面必须加 PID::
 double PID::update(double target, double current, double dt) {
+    // dt 必须是正的：dt<=0 会让微分项除零变成 inf，
+    // 再被限幅"救"成满功率输出 —— 静默的错，比崩溃更危险。
+    if (!(dt > 0.0)) {
+        return 0.0;   // 或者 return 上一个输出；反正不能返回一个假的力
+    }
     double e = target - current;
     // 微分先行 & 第一拍不冲击
     double de = first_ ? 0.0 : -(current - prev_val_) / dt;
