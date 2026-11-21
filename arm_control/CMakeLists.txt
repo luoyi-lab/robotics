@@ -16,6 +16,7 @@ endif()
 add_library(arm_control STATIC
     src/pid.cpp
     src/lowpass.cpp
+    src/kinematics.cpp
 )
 
 target_include_directories(arm_control PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -47,3 +48,19 @@ set_target_properties(test_lowpass PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
 )
 add_test(NAME test_lowpass COMMAND test_lowpass)
+
+# 新增的测试程序
+add_executable(test_kinematics tests/test_kinematics.cpp)
+target_link_libraries(test_kinematics PRIVATE arm_control)
+set_target_properties(test_kinematics PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+# 注册到 CTest
+add_test(NAME test_kinematics COMMAND test_kinematics)
+
+# 新增的 demo 程序
+add_executable(eigen_demo apps/eigen_demo.cpp)
+target_link_libraries(eigen_demo PRIVATE arm_control)
+set_target_properties(eigen_demo PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps
+)
