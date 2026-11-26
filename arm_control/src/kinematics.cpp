@@ -22,4 +22,8 @@ Eigen::Matrix4d fast_inverse(const Eigen::Matrix4d& T) {
     return T_inv;
 }
 
+Eigen::Matrix4d fk2link(double theta1, double theta2, double L1, double L2) {
+    return dh(theta1, 0.0, L1, 0.0) * dh(theta2, 0.0, L2, 0.0);
+}
+
 } // namespace arm
